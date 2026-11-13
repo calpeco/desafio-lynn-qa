@@ -1,0 +1,64 @@
+$ LYNN_FAULTS=ui_double_submit behave --tags=@ui
+
+
+Funcionalidade: Avaliação de respostas do agente (interface)   # test/features/ui/avaliacao_de_respostas_do_agente.feature
+  ✔ Cenário: Avaliar uma resposta pela interface  (1.26s)
+  ✔ Cenário: Cada resposta do agente oferece 👍/👎 e as mensagens da pessoa não  (1.06s)
+  ✔ Cenário: Trocar a avaliação pela interface substitui a anterior  (1.16s)
+
+Funcionalidade: Chat com o agente pela interface (E2E)   # test/features/ui/chat_ui.feature
+  ✔ Cenário: Conversar com o agente pela interface  (0.65s)
+  ✘ Cenário: Duplo clique em Enviar gera uma única mensagem (Parte C)  (6.84s)
+      ↳ Então a interface mostra 1 mensagem(ns) do usuário e 1 do agente
+      AssertionError: mensagens do usuário: [UiMessage(role='user', text='clique duplo', status='completed'), UiMessage(role='assistant', text='Entendi. Recebi sua mensagem sobre "clique duplo" e vou ajudar com isso.\n👍\n👎', status='completed'), UiMessage(role='user', text='clique duplo', status='completed'), UiMessage(role='assistant', text='Oi! Recebi sua mensagem sobre "clique duplo" e vou ajudar com isso. Qualquer dúvida, é só chamar.\n👍\n👎', status='completed')]
+Expected value: '1'
+Actual value: 2 
+Call log:
+  - Expect "to_have_count" get_by_test_id("message-list").locator("[data-testid=\"message\"][data-role=\"user\"]") with timeout 5000ms
+  - waiting for get_by_test_id("message-list").locator("[data-testid=\"message\"][data-role=\"user\"]")
+    14 × locator resolved to 2 elements
+       - unexpected value "2"
+
+        - Expect "to_have_count" get_by_test_id("message-list").locator("[data-testid=\"message\"][data-role=\"user\"]") with timeout 5000ms
+        - waiting for get_by_test_id("message-list").locator("[data-testid=\"message\"][data-role=\"user\"]")
+          14 × locator resolved to 2 elements
+  ✘ Cenário: Falha de rede depois do servidor processar: o reenvio não duplica (Parte C)  (5.95s)
+      ↳ Então a interface mostra 1 mensagem(ns) do usuário e 1 do agente
+      AssertionError: mensagens do usuário: [UiMessage(role='user', text='minha pergunta', status='completed'), UiMessage(role='assistant', text='Certo. Recebi sua mensagem sobre "minha pergunta" e vou ajudar com isso. Fico à disposição.\n👍\n👎', status='completed'), UiMessage(role='user', text='minha pergunta', status='completed'), UiMessage(role='assistant', text='Olá! Recebi sua mensagem sobre "minha pergunta" e vou ajudar com isso. Fico à disposição.\n👍\n👎', status='completed')]
+Expected value: '1'
+Actual value: 2 
+Call log:
+  - Expect "to_have_count" get_by_test_id("message-list").locator("[data-testid=\"message\"][data-role=\"user\"]") with timeout 5000ms
+  - waiting for get_by_test_id("message-list").locator("[data-testid=\"message\"][data-role=\"user\"]")
+    14 × locator resolved to 2 elements
+       - unexpected value "2"
+
+        - Expect "to_have_count" get_by_test_id("message-list").locator("[data-testid=\"message\"][data-role=\"user\"]") with timeout 5000ms
+        - waiting for get_by_test_id("message-list").locator("[data-testid=\"message\"][data-role=\"user\"]")
+          14 × locator resolved to 2 elements
+  ✘ Cenário: Agente indisponível: a pessoa é informada e consegue reenviar sem duplicar  (5.94s)
+      ↳ Então a interface mostra 1 mensagem(ns) do usuário e 1 do agente
+      AssertionError: mensagens do usuário: [UiMessage(role='user', text='preciso de ajuda', status='failed'), UiMessage(role='user', text='preciso de ajuda', status='completed'), UiMessage(role='assistant', text='Certo. Recebi sua mensagem sobre "preciso de ajuda" e vou ajudar com isso. Posso ajudar em algo mais?\n👍\n👎', status='completed')]
+Expected value: '1'
+Actual value: 2 
+Call log:
+  - Expect "to_have_count" get_by_test_id("message-list").locator("[data-testid=\"message\"][data-role=\"user\"]") with timeout 5000ms
+  - waiting for get_by_test_id("message-list").locator("[data-testid=\"message\"][data-role=\"user\"]")
+    14 × locator resolved to 2 elements
+       - unexpected value "2"
+
+        - Expect "to_have_count" get_by_test_id("message-list").locator("[data-testid=\"message\"][data-role=\"user\"]") with timeout 5000ms
+        - waiting for get_by_test_id("message-list").locator("[data-testid=\"message\"][data-role=\"user\"]")
+          14 × locator resolved to 2 elements
+  ✔ Cenário: Conversa encerrada bloqueia novos envios na interface  (0.93s)
+  ✔ Cenário: Conteúdo com HTML é exibido como texto, sem executar script  (0.65s)
+
+1 features passed, 1 failed, 10 skipped
+6 scenarios passed, 3 failed, 0 skipped
+69 steps passed, 3 failed, 5 skipped, 0 undefined
+Took 0m25.039s
+
+Failing scenarios:
+  Chat com o agente pela interface (E2E) :: Duplo clique em Enviar gera uma única mensagem (Parte C)
+  Chat com o agente pela interface (E2E) :: Falha de rede depois do servidor processar: o reenvio não duplica (Parte C)
+  Chat com o agente pela interface (E2E) :: Agente indisponível: a pessoa é informada e consegue reenviar sem duplicar

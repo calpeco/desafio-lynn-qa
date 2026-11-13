@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "conversation.schema.json",
+  "title": "Conversation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "agent_id", "owner_id", "status", "created_at", "closed_at", "messages"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^conv_[a-f0-9]{16}$"},
+    "agent_id": {"type": "string", "minLength": 1},
+    "owner_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["open", "closed"]},
+    "created_at": {"type": "string", "format": "date-time"},
+    "closed_at": {"type": ["string", "null"], "format": "date-time"},
+    "messages": {"type": "array", "items": {"$ref": "message.schema.json"}}
+  },
+  "if": {"properties": {"status": {"const": "closed"}}},
+  "then": {"properties": {"closed_at": {"type": "string"}}},
+  "else": {"properties": {"closed_at": {"type": "null"}}}
+}

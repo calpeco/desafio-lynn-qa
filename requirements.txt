@@ -1,0 +1,4 @@
+# Instale tudo de uma vez:  ./setup.sh   (ou: pip install -r requirements.txt)
+# Python 3.11+. Nada aqui chama serviço pago nem rede externa.
+-r app/requirements.txt
+-r test/requirements.txt

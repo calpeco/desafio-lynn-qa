@@ -1,0 +1,6 @@
+<testsuite name="Contrato das respostas" tests="4" failures="0" time="0.122">
+  <testcase classname="02_contrato" name="Consultar e encerrar seguem o contrato de conversa" time="0.036"></testcase>
+  <testcase classname="02_contrato" name="Resposta do agente traz metadados de custo e latência" time="0.027"></testcase>
+  <testcase classname="02_contrato" name="Sucesso e erro usam Content-Type JSON" time="0.035"></testcase>
+  <testcase classname="02_contrato" name="Rota inexistente responde com o envelope de erro padrão" time="0.024"></testcase>
+</testsuite>

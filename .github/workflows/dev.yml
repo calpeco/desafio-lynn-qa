@@ -1,0 +1,30 @@
+# QA no ambiente de DESENVOLVIMENTO: feedback rápido em todo push/PR.
+name: QA · dev
+
+on:
+  push:
+    branches: [develop] # features entram via pull_request (evita rodar 2x no mesmo commit)
+  pull_request:
+    branches: [develop]
+  workflow_dispatch:
+    inputs:
+      api_shards:
+        description: "Shards paralelos de API"
+        type: number
+        default: 4
+
+concurrency:
+  group: qa-dev-${{ github.ref }}
+  cancel-in-progress: true # push novo cancela a execução anterior da mesma branch
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    uses: ./.github/workflows/_qa-pipeline.yml
+    with:
+      environment: dev
+      api_shards: ${{ inputs.api_shards || 4 }}
+      run_fault_injection: false
+    secrets: inherit

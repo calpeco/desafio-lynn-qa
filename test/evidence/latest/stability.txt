@@ -1,0 +1,3 @@
+execução 1: 93 scenarios passed, 0 failed, 0 skipped
+execução 2: 93 scenarios passed, 0 failed, 0 skipped
+execução 3: 93 scenarios passed, 0 failed, 0 skipped

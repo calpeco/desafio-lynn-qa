@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+.env
+.artifacts/
+*.egg-info/
+test/reports/raw/
+test/reports/scaffold/

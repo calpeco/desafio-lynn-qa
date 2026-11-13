@@ -1,0 +1,7 @@
+<testsuite name="Observabilidade e proteção de dados nos logs" tests="5" failures="0" time="0.176">
+  <testcase classname="09_observabilidade" name="O identificador da requisição é propagado" time="0.021"></testcase>
+  <testcase classname="09_observabilidade" name="Um identificador é gerado quando o cliente não envia" time="0.041"></testcase>
+  <testcase classname="09_observabilidade" name="Logs estruturados permitem rastrear a requisição de ponta a ponta" time="0.035"></testcase>
+  <testcase classname="09_observabilidade" name="Falha do LLM fica registrada com o tipo" time="0.048"></testcase>
+  <testcase classname="09_observabilidade" name="Conteúdo da mensagem e credenciais não vão para os logs" time="0.031"></testcase>
+</testsuite>

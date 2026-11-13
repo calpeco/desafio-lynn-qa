@@ -1,0 +1,12 @@
+<testsuite name="Validação da mensagem e da criação de conversa" tests="10" failures="0" time="0.278">
+  <testcase classname="03_validacao_entrada" name="Tamanhos válidos nos limites são aceitos (limite superior) -- @1.1" time="0.023"></testcase>
+  <testcase classname="03_validacao_entrada" name="Tamanhos válidos nos limites são aceitos (emoji fora do BMP) -- @1.2" time="0.037"></testcase>
+  <testcase classname="03_validacao_entrada" name="Conteúdos especiais são armazenados sem alteração (SQL como texto) -- @1.1" time="0.030"></testcase>
+  <testcase classname="03_validacao_entrada" name="Conteúdo inválido é rejeitado sem consumir tokens (vazio) -- @1.1" time="0.033"></testcase>
+  <testcase classname="03_validacao_entrada" name="Conteúdo inválido é rejeitado sem consumir tokens (número) -- @1.2" time="0.032"></testcase>
+  <testcase classname="03_validacao_entrada" name="Espaços nas bordas são removidos antes de armazenar e de contar o limite" time="0.022"></testcase>
+  <testcase classname="03_validacao_entrada" name="4001 caracteres é rejeitado (limite superior + 1)" time="0.032"></testcase>
+  <testcase classname="03_validacao_entrada" name="JSON malformado é rejeitado (objeto incompleto) -- @1.1" time="0.026"></testcase>
+  <testcase classname="03_validacao_entrada" name="Conversa exige agente válido (desativado) -- @1.1" time="0.021"></testcase>
+  <testcase classname="03_validacao_entrada" name="Conversa exige agente válido (nulo) -- @1.2" time="0.021"></testcase>
+</testsuite>

@@ -1,0 +1,22 @@
+<testsuite name="Avaliação de respostas do agente" tests="20" failures="0" time="0.753">
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Avaliar positivamente uma resposta do agente" time="0.032"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="O histórico traz exatamente a avaliação registrada e não ganha mensagens novas" time="0.041"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Mensagem da pessoa usuária não pode ser avaliada" time="0.036"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="As duas avaliações válidas são aceitas" time="0.034"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Avaliação ausente, inválida ou de outro tipo é rejeitada (ausente) -- @1.1" time="0.038"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Avaliação ausente, inválida ou de outro tipo é rejeitada (fora do domínio) -- @1.2" time="0.036"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Avaliação inválida não apaga a avaliação anterior" time="0.045"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Comentário dentro do limite é aceito (limite superior) -- @1.1" time="0.037"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Comentário acima de 500 caracteres é rejeitado" time="0.042"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Comentário vazio ou só com espaços equivale a sem comentário (só espaços) -- @1.1" time="0.043"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Avaliar de novo substitui a avaliação anterior, inclusive o comentário" time="0.036"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Repetir a mesma avaliação não duplica nada" time="0.033"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Outra pessoa não avalia resposta em conversa alheia" time="0.043"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Resposta alheia não pode ser avaliada pela conversa da própria pessoa" time="0.043"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Conversa inexistente retorna CONVERSATION_NOT_FOUND" time="0.028"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Mensagem inexistente retorna MESSAGE_NOT_FOUND" time="0.025"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Avaliar exige autenticação" time="0.043"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Resposta de conversa encerrada pode ser avaliada" time="0.047"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Comentário com dado pessoal não vai para os logs" time="0.034"></testcase>
+  <testcase classname="10_avaliacao_de_respostas_do_agente" name="Comentário rejeitado com dado pessoal também não vai para os logs" time="0.038"></testcase>
+</testsuite>

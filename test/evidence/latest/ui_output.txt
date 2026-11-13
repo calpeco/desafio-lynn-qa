@@ -1,0 +1,18 @@
+
+Funcionalidade: Avaliação de respostas do agente (interface)   # test/features/ui/avaliacao_de_respostas_do_agente.feature
+  ✔ Cenário: Avaliar uma resposta pela interface  (1.31s)
+  ✔ Cenário: Cada resposta do agente oferece 👍/👎 e as mensagens da pessoa não  (1.03s)
+  ✔ Cenário: Trocar a avaliação pela interface substitui a anterior  (1.21s)
+
+Funcionalidade: Chat com o agente pela interface (E2E)   # test/features/ui/chat_ui.feature
+  ✔ Cenário: Conversar com o agente pela interface  (0.63s)
+  ✔ Cenário: Duplo clique em Enviar gera uma única mensagem (Parte C)  (1.24s)
+  ✔ Cenário: Falha de rede depois do servidor processar: o reenvio não duplica (Parte C)  (0.98s)
+  ✔ Cenário: Agente indisponível: a pessoa é informada e consegue reenviar sem duplicar  (0.95s)
+  ✔ Cenário: Conversa encerrada bloqueia novos envios na interface  (0.92s)
+  ✔ Cenário: Conteúdo com HTML é exibido como texto, sem executar script  (0.66s)
+
+2 features passed, 0 failed, 10 skipped
+9 scenarios passed, 0 failed, 0 skipped
+77 steps passed, 0 failed, 0 skipped, 0 undefined
+Took 0m9.506s

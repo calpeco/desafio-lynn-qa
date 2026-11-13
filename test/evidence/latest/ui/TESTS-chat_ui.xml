@@ -1,0 +1,8 @@
+<testsuite name="Chat com o agente pela interface (E2E)" tests="6" failures="0" time="5.368">
+  <testcase classname="chat_ui" name="Conversar com o agente pela interface" time="0.627"></testcase>
+  <testcase classname="chat_ui" name="Duplo clique em Enviar gera uma única mensagem (Parte C)" time="1.237"></testcase>
+  <testcase classname="chat_ui" name="Falha de rede depois do servidor processar: o reenvio não duplica (Parte C)" time="0.983"></testcase>
+  <testcase classname="chat_ui" name="Agente indisponível: a pessoa é informada e consegue reenviar sem duplicar" time="0.946"></testcase>
+  <testcase classname="chat_ui" name="Conversa encerrada bloqueia novos envios na interface" time="0.918"></testcase>
+  <testcase classname="chat_ui" name="Conteúdo com HTML é exibido como texto, sem executar script" time="0.657"></testcase>
+</testsuite>

@@ -1,0 +1,3 @@
+# Sistema sob teste (API mock + frontend)
+flask>=3.0,<4
+werkzeug>=3.0,<4

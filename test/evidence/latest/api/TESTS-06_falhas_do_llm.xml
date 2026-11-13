@@ -1,0 +1,8 @@
+<testsuite name="Falha, indisponibilidade e lentidão do modelo de linguagem" tests="6" failures="0" time="1.810">
+  <testcase classname="06_falhas_do_llm" name="Usuário é informado quando não há resposta (indisponível) -- @1.1" time="0.029"></testcase>
+  <testcase classname="06_falhas_do_llm" name="Usuário é informado quando não há resposta (timeout) -- @1.2" time="0.333"></testcase>
+  <testcase classname="06_falhas_do_llm" name="O servidor corta no timeout em vez de esperar o provedor" time="0.538"></testcase>
+  <testcase classname="06_falhas_do_llm" name="Resposta lenta dentro do orçamento é entregue com a latência real" time="0.831"></testcase>
+  <testcase classname="06_falhas_do_llm" name="O serviço se recupera após indisponibilidade" time="0.034"></testcase>
+  <testcase classname="06_falhas_do_llm" name="Falha não corrompe o histórico existente" time="0.045"></testcase>
+</testsuite>

@@ -1,0 +1,20 @@
+[hidden] { display: none !important; }  /* sem isto, .error{display:flex} anulava o atributo hidden (bug pego pelo E2E) */
+body { font-family: system-ui, sans-serif; margin: 0; background: #f5f6f8; color: #1d1f23; }
+.app { max-width: 760px; margin: 2rem auto; }
+.panel { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.chat-header { display: flex; gap: .5rem; align-items: center; }
+.chat-header span { flex: 1; font-weight: 600; }
+.status { margin: .75rem 0; font-size: .9rem; color: #555; }
+.messages { list-style: none; padding: 0; min-height: 200px; }
+.messages li { margin: .4rem 0; padding: .6rem .8rem; border-radius: 8px; max-width: 80%; }
+.messages li[data-role="user"] { background: #dbe8ff; margin-left: auto; }
+.messages li[data-role="assistant"] { background: #eef0f3; }
+.messages li[data-status="failed"] { border: 1px dashed #c0392b; }
+.typing { font-style: italic; color: #666; }
+.error { background: #fdecea; color: #8a1c13; padding: .6rem; border-radius: 6px; display: flex; gap: .5rem; }
+.composer { display: flex; gap: .5rem; margin-top: .75rem; align-items: flex-end; }
+.composer textarea { flex: 1; min-height: 3rem; }
+.counter { font-size: .75rem; color: #777; }
+.feedback { display: flex; gap: .35rem; align-items: center; margin-top: .4rem; font-size: .8rem; color: #555; }
+.feedback button { border: 1px solid #ccd; background: #fff; border-radius: 6px; padding: 0 .4rem; cursor: pointer; }
+.feedback button[aria-pressed="true"] { background: #dbe8ff; border-color: #2a78d6; }

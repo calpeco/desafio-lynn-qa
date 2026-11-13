@@ -1,0 +1,7 @@
+<testsuite name="Ciclo de vida da conversa e ordem do histórico" tests="5" failures="0" time="0.817">
+  <testcase classname="05_ciclo_de_vida" name="Mensagem em conversa encerrada é recusada sem gastar tokens" time="0.041"></testcase>
+  <testcase classname="05_ciclo_de_vida" name="Encerrar duas vezes é idempotente (premissa P-10)" time="0.034"></testcase>
+  <testcase classname="05_ciclo_de_vida" name="Histórico preserva a ordem em envios sequenciais" time="0.048"></testcase>
+  <testcase classname="05_ciclo_de_vida" name="Histórico consistente sob envios simultâneos (ex.: duas abas)" time="0.061"></testcase>
+  <testcase classname="05_ciclo_de_vida" name="Mensagem na fila é recusada se a conversa for encerrada (corrida com o close)" time="0.633"></testcase>
+</testsuite>

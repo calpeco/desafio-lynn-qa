@@ -1,0 +1,34 @@
+# QA no ambiente de HOMOLOGAÇÃO: gate de release + regressão noturna, com injeção de defeitos.
+name: QA · hom
+
+on:
+  push:
+    branches: [hom, "release/**"]
+  schedule:
+    - cron: "17 6 * * 1-5" # 03:17 em Brasília (UTC-3), dias úteis
+  workflow_dispatch:
+    inputs:
+      api_shards:
+        description: "Shards paralelos de API"
+        type: number
+        default: 4
+      run_fault_injection:
+        description: "Rodar injeção de defeitos (teste dos testes)"
+        type: boolean
+        default: true
+
+concurrency:
+  group: qa-hom-${{ github.ref }}
+  cancel-in-progress: false # homologação não interrompe uma execução em andamento
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    uses: ./.github/workflows/_qa-pipeline.yml
+    with:
+      environment: hom
+      api_shards: ${{ inputs.api_shards || 4 }}
+      run_fault_injection: ${{ github.event_name != 'workflow_dispatch' || inputs.run_fault_injection }}
+    secrets: inherit

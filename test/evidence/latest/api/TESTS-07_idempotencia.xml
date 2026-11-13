@@ -1,0 +1,12 @@
+<testsuite name="Reenvio, duplo clique e idempotência" tests="10" failures="0" time="0.838">
+  <testcase classname="07_idempotencia" name="Reenvio após perda da resposta (falha de rede) não duplica" time="0.037"></testcase>
+  <testcase classname="07_idempotencia" name="Duplo clique simultâneo gera uma única mensagem e uma única resposta" time="0.432"></testcase>
+  <testcase classname="07_idempotencia" name="Reenvio após falha do LLM reaproveita a mensagem do usuário" time="0.033"></testcase>
+  <testcase classname="07_idempotencia" name="Mesma chave com conteúdo diferente é rejeitada" time="0.032"></testcase>
+  <testcase classname="07_idempotencia" name="Chaves diferentes são mensagens legitimamente distintas (controle negativo)" time="0.033"></testcase>
+  <testcase classname="07_idempotencia" name="A chave tem escopo por pessoa e por conversa" time="0.046"></testcase>
+  <testcase classname="07_idempotencia" name="Reenvio após falha, com a conversa já adiantada, abre um novo turno sem quebrar a ordem" time="0.049"></testcase>
+  <testcase classname="07_idempotencia" name="Sem chave, o reenvio cria nova mensagem (limite conhecido; a correção depende do cliente)" time="0.046"></testcase>
+  <testcase classname="07_idempotencia" name="Erro inesperado (500) não trava a chave nem perde a mensagem" time="0.038"></testcase>
+  <testcase classname="07_idempotencia" name="Chave expirada (TTL) é tratada como nova" time="0.092"></testcase>
+</testsuite>

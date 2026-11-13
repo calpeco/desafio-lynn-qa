@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "message.schema.json",
+  "title": "Message",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "seq",
+    "role",
+    "content",
+    "status",
+    "created_at",
+    "reply_to",
+    "metadata",
+    "feedback"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^msg_[a-f0-9]{16}$"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "role": {
+      "enum": [
+        "user",
+        "assistant"
+      ]
+    },
+    "content": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "failed"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reply_to": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "metadata": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/metadata"
+        }
+      ]
+    },
+    "feedback": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/feedback"
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "assistant"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "metadata": {
+            "$ref": "#/$defs/metadata"
+          },
+          "reply_to": {
+            "type": "string"
+          },
+          "content": {
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "user"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "metadata": {
+            "type": "null"
+          },
+          "reply_to": {
+            "type": "null"
+          },
+          "content": {
+            "minLength": 1,
+            "maxLength": 4000
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model",
+        "latency_ms",
+        "prompt_tokens",
+        "completion_tokens",
+        "finish_reason"
+      ],
+      "properties": {
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "latency_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "prompt_tokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "completion_tokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "finish_reason": {
+          "enum": [
+            "stop",
+            "length",
+            "content_filter"
+          ]
+        }
+      }
+    },
+    "feedback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rating",
+        "comment",
+        "updated_at"
+      ],
+      "properties": {
+        "rating": {
+          "enum": [
+            "positive",
+            "negative"
+          ]
+        },
+        "comment": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

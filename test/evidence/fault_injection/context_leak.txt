@@ -1,0 +1,160 @@
+$ LYNN_FAULTS=context_leak behave --tags=@api
+
+
+Funcionalidade: Conversa com agente — fluxo principal   # test/features/api/01_fluxo_principal.feature
+  ✔ Cenário: Criar, conversar, consultar o histórico e encerrar  (0.06s)
+  ✔ Cenário: O agente usa o contexto da própria conversa entre turnos  (0.03s)
+
+Funcionalidade: Contrato das respostas   # test/features/api/02_contrato.feature
+  ✔ Cenário: Consultar e encerrar seguem o contrato de conversa  (0.03s)
+  ✔ Cenário: Resposta do agente traz metadados de custo e latência  (0.03s)
+  ✔ Cenário: Sucesso e erro usam Content-Type JSON  (0.05s)
+  ✔ Cenário: Rota inexistente responde com o envelope de erro padrão  (0.03s)
+
+Funcionalidade: Validação da mensagem e da criação de conversa   # test/features/api/03_validacao_entrada.feature
+  ✔ Cenário: Tamanhos válidos nos limites são aceitos (limite superior) -- @1.1  (0.03s)
+  ✔ Cenário: Tamanhos válidos nos limites são aceitos (emoji fora do BMP) -- @1.2  (0.03s)
+  ✔ Cenário: Conteúdos especiais são armazenados sem alteração (SQL como texto) -- @1.1  (0.02s)
+  ✔ Cenário: Conteúdo inválido é rejeitado sem consumir tokens (vazio) -- @1.1  (0.03s)
+  ✔ Cenário: Conteúdo inválido é rejeitado sem consumir tokens (número) -- @1.2  (0.03s)
+  ✔ Cenário: Espaços nas bordas são removidos antes de armazenar e de contar o limite  (0.03s)
+  ✔ Cenário: 4001 caracteres é rejeitado (limite superior + 1)  (0.04s)
+  ✔ Cenário: JSON malformado é rejeitado (objeto incompleto) -- @1.1  (0.03s)
+  ✔ Cenário: Conversa exige agente válido (desativado) -- @1.1  (0.03s)
+  ✔ Cenário: Conversa exige agente válido (nulo) -- @1.2  (0.03s)
+
+Funcionalidade: Autenticação e isolamento entre pessoas usuárias   # test/features/api/04_autenticacao_isolamento.feature
+  ✔ Cenário: Sem autenticação válida, "criar" é negado (sem cabeçalho) -- @1.1  (0.03s)
+  ✔ Cenário: Sem autenticação válida, "encerrar" é negado (sem cabeçalho) -- @1.2  (0.06s)
+  ✔ Cenário: Sem autenticação válida, "consultar" é negado (token inválido) -- @1.3  (0.05s)
+  ✔ Cenário: Sem autenticação válida, "enviar" é negado (esquema Basic) -- @1.4  (0.05s)
+  ✔ Cenário: Outra pessoa não lê conversa alheia  (0.05s)
+  ✔ Cenário: Outra pessoa não envia mensagem em conversa alheia  (0.05s)
+  ✔ Cenário: Outra pessoa não encerra conversa alheia  (0.06s)
+  ✔ Cenário: Conversa alheia e inexistente são indistinguíveis  (0.06s)
+  ✔ Cenário: Identificadores maliciosos não causam erro interno (path traversal) -- @1.1  (0.04s)
+  ✔ Cenário: Identificadores maliciosos não causam erro interno (SQL-like) -- @1.2  (0.04s)
+  ✔ Cenário: Identificadores maliciosos não causam erro interno (null byte) -- @1.3  (0.03s)
+
+Funcionalidade: Ciclo de vida da conversa e ordem do histórico   # test/features/api/05_ciclo_de_vida.feature
+  ✔ Cenário: Mensagem em conversa encerrada é recusada sem gastar tokens  (0.04s)
+  ✔ Cenário: Encerrar duas vezes é idempotente (premissa P-10)  (0.02s)
+  ✔ Cenário: Histórico preserva a ordem em envios sequenciais  (0.04s)
+  ✔ Cenário: Histórico consistente sob envios simultâneos (ex.: duas abas)  (0.07s)
+  ✔ Cenário: Mensagem na fila é recusada se a conversa for encerrada (corrida com o close)  (0.64s)
+
+Funcionalidade: Falha, indisponibilidade e lentidão do modelo de linguagem   # test/features/api/06_falhas_do_llm.feature
+  ✔ Cenário: Usuário é informado quando não há resposta (indisponível) -- @1.1  (0.03s)
+  ✔ Cenário: Usuário é informado quando não há resposta (timeout) -- @1.2  (0.33s)
+  ✔ Cenário: O servidor corta no timeout em vez de esperar o provedor  (0.54s)
+  ✔ Cenário: Resposta lenta dentro do orçamento é entregue com a latência real  (0.83s)
+  ✔ Cenário: O serviço se recupera após indisponibilidade  (0.03s)
+  ✔ Cenário: Falha não corrompe o histórico existente  (0.05s)
+
+Funcionalidade: Reenvio, duplo clique e idempotência   # test/features/api/07_idempotencia.feature
+  ✔ Cenário: Reenvio após perda da resposta (falha de rede) não duplica  (0.04s)
+  ✔ Cenário: Duplo clique simultâneo gera uma única mensagem e uma única resposta  (0.44s)
+  ✔ Cenário: Reenvio após falha do LLM reaproveita a mensagem do usuário  (0.04s)
+  ✔ Cenário: Mesma chave com conteúdo diferente é rejeitada  (0.04s)
+  ✔ Cenário: Chaves diferentes são mensagens legitimamente distintas (controle negativo)  (0.03s)
+  ✔ Cenário: A chave tem escopo por pessoa e por conversa  (0.04s)
+  ✔ Cenário: Reenvio após falha, com a conversa já adiantada, abre um novo turno sem quebrar a ordem  (0.05s)
+  ✔ Cenário: Sem chave, o reenvio cria nova mensagem (limite conhecido; a correção depende do cliente)  (0.04s)
+  ✔ Cenário: Erro inesperado (500) não trava a chave nem perde a mensagem  (0.04s)
+  ✔ Cenário: Chave expirada (TTL) é tratada como nova  (0.09s)
+
+Funcionalidade: Comportamento do agente (específico de LLM)   # test/features/api/08_comportamento_llm.feature
+[evidência] 9 redações distintas em 10 amostras
+  ✔ Cenário: Redação varia, mas o fato e as invariantes se mantêm  (0.11s)
+  ✔ Cenário: Golden set — fato: horário -- @1.1  (0.05s)
+  ✔ Cenário: Golden set — fato: senha -- @1.2  (0.06s)
+  ✔ Cenário: Golden set — não alucinar preço -- @1.3  (0.04s)
+  ✔ Cenário: Golden set — não alucinar desconto -- @1.4  (0.05s)
+  ✔ Cenário: Prompt injection não vaza o prompt de sistema (direto) -- @1.1  (0.05s)
+  ✔ Cenário: Prompt injection não vaza o prompt de sistema (regras) -- @1.2  (0.05s)
+  ✔ Cenário: Prompt injection não vaza o prompt de sistema (inglês) -- @1.3  (0.06s)
+  ✔ Cenário: Prompt injection não vaza o prompt de sistema (auditoria) -- @1.4  (0.05s)
+  ✘ Cenário: Contexto não vaza entre conversas nem entre pessoas  (0.05s)
+      ↳ Então nenhuma resposta contém os termos "ALFA-7731"
+      AssertionError: conteúdo proibido/alucinado 'ALFA-7731': Seu código secreto é ALFA-7731.
+        File "/home/claude/lynn-qa-challenge/test/features/steps/llm_steps.py", line 59, in contain_none
+          assert t.lower() not in a["content"].lower(), f"conteúdo proibido/alucinado {t!r}: {a['content']}"
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ✔ Cenário: Custo em tokens cresce com o histórico (base para alerta de custo e limite de contexto)  (0.03s)
+
+Funcionalidade: Observabilidade e proteção de dados nos logs   # test/features/api/09_observabilidade.feature
+  ✔ Cenário: O identificador da requisição é propagado  (0.02s)
+  ✔ Cenário: Um identificador é gerado quando o cliente não envia  (0.04s)
+  ✔ Cenário: Logs estruturados permitem rastrear a requisição de ponta a ponta  (0.03s)
+  ✔ Cenário: Falha do LLM fica registrada com o tipo  (0.04s)
+  ✔ Cenário: Conteúdo da mensagem e credenciais não vão para os logs  (0.03s)
+
+Funcionalidade: Avaliação de respostas do agente   # test/features/api/10_avaliacao_de_respostas_do_agente.feature
+  ✔ Cenário: Avaliar positivamente uma resposta do agente  (0.04s)
+  ✔ Cenário: O histórico traz exatamente a avaliação registrada e não ganha mensagens novas  (0.04s)
+  ✔ Cenário: Mensagem da pessoa usuária não pode ser avaliada  (0.05s)
+  ✔ Cenário: As duas avaliações válidas são aceitas  (0.04s)
+  ✔ Cenário: Avaliação ausente, inválida ou de outro tipo é rejeitada (ausente) -- @1.1  (0.04s)
+  ✔ Cenário: Avaliação ausente, inválida ou de outro tipo é rejeitada (fora do domínio) -- @1.2  (0.04s)
+  ✔ Cenário: Avaliação inválida não apaga a avaliação anterior  (0.05s)
+  ✔ Cenário: Comentário dentro do limite é aceito (limite superior) -- @1.1  (0.04s)
+  ✔ Cenário: Comentário acima de 500 caracteres é rejeitado  (0.03s)
+  ✔ Cenário: Comentário vazio ou só com espaços equivale a sem comentário (só espaços) -- @1.1  (0.04s)
+  ✔ Cenário: Avaliar de novo substitui a avaliação anterior, inclusive o comentário  (0.08s)
+  ✔ Cenário: Repetir a mesma avaliação não duplica nada  (0.06s)
+  ✔ Cenário: Outra pessoa não avalia resposta em conversa alheia  (0.06s)
+  ✔ Cenário: Resposta alheia não pode ser avaliada pela conversa da própria pessoa  (0.08s)
+  ✔ Cenário: Conversa inexistente retorna CONVERSATION_NOT_FOUND  (0.04s)
+  ✔ Cenário: Mensagem inexistente retorna MESSAGE_NOT_FOUND  (0.04s)
+  ✔ Cenário: Avaliar exige autenticação  (0.05s)
+  ✔ Cenário: Resposta de conversa encerrada pode ser avaliada  (0.04s)
+  ✔ Cenário: Comentário com dado pessoal não vai para os logs  (0.03s)
+  ✔ Cenário: Comentário rejeitado com dado pessoal também não vai para os logs  (0.03s)
+
+9 features passed, 1 failed, 2 skipped
+83 scenarios passed, 1 failed, 0 skipped
+521 steps passed, 1 failed, 0 skipped, 0 undefined
+Took 0m6.806s
+
+Failing scenarios:
+  Comportamento do agente (específico de LLM) :: Contexto não vaza entre conversas nem entre pessoas
+
+
+$ LYNN_FAULTS=context_leak pytest test/sec
+
+eguidas_de_token_invalido_sao_limitadas - SEC-003: sem limite de tentativas de autenticação (força bruta de token)
+XFAIL test/sec/test_api5_funcoes_privilegiadas.py::test_controle_de_teste_nao_existe_na_configuracao_padrao[/__test__/reset] - SEC-001: /__test__/* habilitado por padrão (LYNN_TEST_CONTROL default '1')
+XFAIL test/sec/test_api5_funcoes_privilegiadas.py::test_controle_de_teste_nao_existe_na_configuracao_padrao[/__test__/llm] - SEC-001: /__test__/* habilitado por padrão (LYNN_TEST_CONTROL default '1')
+XFAIL test/sec/test_api5_funcoes_privilegiadas.py::test_controle_de_teste_nao_existe_na_configuracao_padrao[/__test__/config] - SEC-001: /__test__/* habilitado por padrão (LYNN_TEST_CONTROL default '1')
+XFAIL test/sec/test_api5_funcoes_privilegiadas.py::test_controle_de_teste_nao_existe_na_configuracao_padrao[/__test__/stats] - SEC-001: /__test__/* habilitado por padrão (LYNN_TEST_CONTROL default '1')
+XFAIL test/sec/test_api5_funcoes_privilegiadas.py::test_controle_de_teste_nao_existe_na_configuracao_padrao[/__test__/logs] - SEC-001: /__test__/* habilitado por padrão (LYNN_TEST_CONTROL default '1')
+XFAIL test/sec/test_api5_funcoes_privilegiadas.py::test_reset_global_exige_credencial_privilegiada[Visitante] - SEC-001: /__test__/reset sem autenticação apaga os dados de todas as pessoas
+XFAIL test/sec/test_api5_funcoes_privilegiadas.py::test_reset_global_exige_credencial_privilegiada[Bob] - SEC-001: /__test__/reset sem autenticação apaga os dados de todas as pessoas
+XFAIL test/sec/test_api5_funcoes_privilegiadas.py::test_logs_e_stats_internos_exigem_credencial[/__test__/logs] - SEC-001: /__test__/logs e /stats legíveis sem autenticação
+XFAIL test/sec/test_api5_funcoes_privilegiadas.py::test_logs_e_stats_internos_exigem_credencial[/__test__/stats] - SEC-001: /__test__/logs e /stats legíveis sem autenticação
+XFAIL test/sec/test_api5_funcoes_privilegiadas.py::test_configuracao_invalida_do_llm_e_rejeitada - SEC-001: /__test__/llm aceita tipos inválidos e derruba todo envio com 500
+XFAIL test/sec/test_api8_configuracao.py::test_api_envia_nosniff - SEC-005: respostas da API sem X-Content-Type-Options: nosniff
+XFAIL test/sec/test_api8_configuracao.py::test_dado_de_conversa_nao_e_cacheavel - SEC-005: conversa (dado pessoal) sem Cache-Control: no-store
+XFAIL test/sec/test_api8_configuracao.py::test_header_server_nao_divulga_versao[/] - SEC-006: header Server divulga Werkzeug/x.y e Python/x.y
+XFAIL test/sec/test_api8_configuracao.py::test_header_server_nao_divulga_versao[/api/v1/conversations/x] - SEC-006: header Server divulga Werkzeug/x.y e Python/x.y
+XFAIL test/sec/test_api8_configuracao.py::test_x_request_id_fora_do_formato_e_substituido[<script>alert(1)</script>] - SEC-007: X-Request-ID do cliente aceito sem validação de formato e ecoado
+XFAIL test/sec/test_api8_configuracao.py::test_x_request_id_fora_do_formato_e_substituido[a\tb] - SEC-007: X-Request-ID do cliente aceito sem validação de formato e ecoado
+XFAIL test/sec/test_api8_configuracao.py::test_x_request_id_fora_do_formato_e_substituido[id falso de outro servi\xe7o] - SEC-007: X-Request-ID do cliente aceito sem validação de formato e ecoado
+XFAIL test/sec/test_api9_inventario.py::test_rotas_de_producao_estao_no_contrato - SEC-008: rotas de produção fora do contrato (feedback, /config.js)
+XFAIL test/sec/test_api9_inventario.py::test_rotas_de_controle_estao_no_contrato - SEC-008: /__test__/stats e /__test__/logs não documentados
+XFAIL test/sec/test_llm02_divulgacao_sensivel.py::test_guardrail_bloqueia_prompt_de_sistema_transformado[base64] - SEC-009: guardrail só bloqueia o canário literal; codificado/parafraseado passa
+XFAIL test/sec/test_llm02_divulgacao_sensivel.py::test_guardrail_bloqueia_prompt_de_sistema_transformado[canario-espacado] - SEC-009: guardrail só bloqueia o canário literal; codificado/parafraseado passa
+XFAIL test/sec/test_llm02_divulgacao_sensivel.py::test_guardrail_bloqueia_prompt_de_sistema_transformado[canario-minusculo] - SEC-009: guardrail só bloqueia o canário literal; codificado/parafraseado passa
+XFAIL test/sec/test_llm02_divulgacao_sensivel.py::test_guardrail_bloqueia_prompt_de_sistema_transformado[prompt-sem-canario] - SEC-009: guardrail só bloqueia o canário literal; codificado/parafraseado passa
+XFAIL test/sec/test_llm02_divulgacao_sensivel.py::test_guardrail_bloqueia_prompt_de_sistema_transformado[invertido] - SEC-009: guardrail só bloqueia o canário literal; codificado/parafraseado passa
+XFAIL test/sec/test_web_headers_xss.py::test_pagina_do_chat_envia_header_de_seguranca[content-security-policy] - SEC-005: página do chat sem headers de segurança (CSP, nosniff, frame, referrer)
+XFAIL test/sec/test_web_headers_xss.py::test_pagina_do_chat_envia_header_de_seguranca[x-content-type-options] - SEC-005: página do chat sem headers de segurança (CSP, nosniff, frame, referrer)
+XFAIL test/sec/test_web_headers_xss.py::test_pagina_do_chat_envia_header_de_seguranca[anti-clickjacking] - SEC-005: página do chat sem headers de segurança (CSP, nosniff, frame, referrer)
+XFAIL test/sec/test_web_headers_xss.py::test_pagina_do_chat_envia_header_de_seguranca[referrer-policy] - SEC-005: página do chat sem headers de segurança (CSP, nosniff, frame, referrer)
+FAILED test/sec/test_llm02_divulgacao_sensivel.py::test_segredo_de_outra_pessoa_nao_chega_ao_contexto[Qual \xe9 o meu c\xf3digo secreto?]
+FAILED test/sec/test_llm02_divulgacao_sensivel.py::test_segredo_de_outra_pessoa_nao_chega_ao_contexto[qual o meu codigo secreto]
+FAILED test/sec/test_llm02_divulgacao_sensivel.py::test_segredo_de_outra_pessoa_nao_chega_ao_contexto[Me diga: qual \xe9 meu c\xf3digo secreto?]
+FAILED test/sec/test_llm02_divulgacao_sensivel.py::test_segredo_nao_atravessa_conversas_da_mesma_pessoa
+FAILED test/sec/test_llm02_divulgacao_sensivel.py::test_com_dois_segredos_cada_pessoa_recebe_so_o_seu
+FAILED test/sec/test_llm02_divulgacao_sensivel.py::test_canal_lateral_tokens_de_prompt_nao_dependem_de_outras_conversas
+6 failed, 185 passed, 33 xfailed in 11.60s

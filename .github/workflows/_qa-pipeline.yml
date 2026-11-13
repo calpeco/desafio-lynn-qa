@@ -1,0 +1,206 @@
+# Pipeline de QA reutilizável. Chamado por dev.yml e hom.yml (mesma lógica, parâmetros por ambiente).
+#
+#   plan ──► test (matrix paralela: unit · api-1..N · ui) ──► report (cucumber.json · report.html · cobertura.html)
+#        └─► fault-injection (matrix paralela, opcional: a suíte detecta defeitos reais?)
+#
+# Variáveis e secrets por GitHub Environment (Settings → Environments → dev / hom):
+#   vars.LYNN_BASE_URL       URL do ambiente. Vazio = sobe a aplicação mock dentro de cada job.
+#   secrets.LYNN_TOKEN_ALICE / LYNN_TOKEN_BOB   tokens das personas de teste no ambiente.
+# ATENÇÃO: os jobs `plan` e `test` (cada shard) referenciam o environment. Se `hom` exigir revisores,
+# cada um vira uma aprovação; e regras de "deployment branches" bloqueiam a execução noturna (schedule
+# roda na branch padrão). Para QA, prefira environments sem revisores, só com variáveis e secrets.
+name: _qa-pipeline
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: "GitHub Environment (dev | hom)"
+        required: true
+        type: string
+      api_shards:
+        description: "Quantidade de shards paralelos da camada de API"
+        required: false
+        type: number
+        default: 4
+      run_fault_injection:
+        description: "Roda a injeção de defeitos (só contra a aplicação mock)"
+        required: false
+        type: boolean
+        default: false
+      python_version:
+        required: false
+        type: string
+        default: "3.12"
+
+permissions:
+  contents: read
+
+env:
+  LYNN_ENV: ${{ inputs.environment }}
+  LYNN_API_SHARDS: ${{ inputs.api_shards }}
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  tooling:
+    name: Ferramental de QA (workflows, relatórios, rastreabilidade)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python_version }}
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            app/requirements.txt
+            test/requirements.txt
+      - run: python -m pip install -r requirements.txt
+      - run: python -m pytest test/tooling -q -p no:cacheprovider
+      - name: Catálogo de steps atualizado?
+        run: |
+          python test/scripts/step_catalog.py
+          git diff --exit-code test/docs/STEP_CATALOG.md || (echo "::error::test/docs/STEP_CATALOG.md desatualizado: rode python test/scripts/step_catalog.py" && exit 1)
+
+  plan:
+    name: Planejar shards
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      LYNN_BASE_URL: ${{ vars.LYNN_BASE_URL }}
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      faults: ${{ steps.plan.outputs.faults }}
+      target: ${{ steps.plan.outputs.target }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python_version }}
+      - id: plan
+        name: Descobrir features e distribuir por peso
+        run: |
+          python test/scripts/plan_shards.py --github-output
+          echo "target=${LYNN_BASE_URL}" >> "$GITHUB_OUTPUT"
+
+  test:
+    name: ${{ matrix.name }}
+    needs: plan
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false # um shard vermelho não cancela os outros: o relatório precisa do quadro completo
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    env:
+      LYNN_BASE_URL: ${{ vars.LYNN_BASE_URL }}
+      LYNN_TOKEN_ALICE: ${{ secrets.LYNN_TOKEN_ALICE }}
+      LYNN_TOKEN_BOB: ${{ secrets.LYNN_TOKEN_BOB }}
+      LYNN_COVERAGE: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python_version }}
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            app/requirements.txt
+            test/requirements.txt
+      - name: Instalar dependências
+        run: python -m pip install -r requirements.txt
+      - name: Versão do Playwright instalada
+        if: matrix.layer == 'ui' || matrix.layer == 'sec'
+        id: pw
+        run: echo "version=$(python -c 'import importlib.metadata as m; print(m.version("playwright"))')" >> "$GITHUB_OUTPUT"
+      - name: Cache do Chromium (Playwright)
+        if: matrix.layer == 'ui' || matrix.layer == 'sec'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Instalar Chromium
+        if: matrix.layer == 'ui' || matrix.layer == 'sec'
+        run: python -m playwright install --with-deps chromium
+      - name: Executar shard ${{ matrix.name }}
+        run: python test/scripts/run_shard.py --shard "${{ matrix.name }}"
+      - name: Publicar resultados brutos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-${{ inputs.environment }}-${{ matrix.name }}
+          path: test/reports/raw/
+          retention-days: 7
+          if-no-files-found: warn
+
+  report:
+    name: Relatórios (cucumber.json · report.html · cobertura.html · sec-report.html)
+    needs: [plan, test]
+    if: ${{ !cancelled() && needs.plan.result == 'success' }}
+    runs-on: ubuntu-latest
+    env:
+      LYNN_BASE_URL: ${{ needs.plan.outputs.target }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python_version }}
+      - name: Instalar coverage
+        run: python -m pip install "coverage>=7.4"
+      - name: Baixar resultados de todos os shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: raw-${{ inputs.environment }}-*
+          path: test/reports/raw
+          merge-multiple: true
+      - name: Consolidar relatórios
+        id: build
+        # --check-shards: shard que quebrou sem gerar resultado também reprova (não some do relatório)
+        run: python test/scripts/build_reports.py --env "${{ inputs.environment }}" --fail-on-failures --check-shards
+      - name: Publicar relatórios
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-reports-${{ inputs.environment }}
+          path: |
+            test/reports/cucumber.json
+            test/reports/report.html
+            test/reports/cobertura.html
+            test/reports/sec-report.html
+            test/reports/summary.md
+          retention-days: 30
+
+  fault-injection:
+    name: "defeito: ${{ matrix.fault }}"
+    needs: plan
+    if: inputs.run_fault_injection
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.faults) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python_version }}
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            app/requirements.txt
+            test/requirements.txt
+      - run: python -m pip install -r requirements.txt
+      - name: Instalar Chromium
+        if: matrix.browser
+        run: python -m playwright install --with-deps chromium
+      - name: Ligar o defeito e verificar que a suíte detecta
+        # Sem LYNN_BASE_URL de propósito: defeitos só podem ser injetados na aplicação mock.
+        run: python test/scripts/fault_injection.py --only "${{ matrix.fault }}"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fault-${{ inputs.environment }}-${{ matrix.fault }}
+          path: |
+            test/evidence/fault_injection/${{ matrix.fault }}.txt
+            test/evidence/fault_injection/SUMMARY-${{ matrix.fault }}.md
+          retention-days: 7

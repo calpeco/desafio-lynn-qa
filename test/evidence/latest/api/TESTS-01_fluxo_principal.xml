@@ -1,0 +1,4 @@
+<testsuite name="Conversa com agente — fluxo principal" tests="2" failures="0" time="0.103">
+  <testcase classname="01_fluxo_principal" name="Criar, conversar, consultar o histórico e encerrar" time="0.068"></testcase>
+  <testcase classname="01_fluxo_principal" name="O agente usa o contexto da própria conversa entre turnos" time="0.035"></testcase>
+</testsuite>

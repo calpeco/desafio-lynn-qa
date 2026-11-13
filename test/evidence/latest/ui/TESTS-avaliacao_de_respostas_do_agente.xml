@@ -1,0 +1,5 @@
+<testsuite name="Avaliação de respostas do agente (interface)" tests="3" failures="0" time="3.543">
+  <testcase classname="avaliacao_de_respostas_do_agente" name="Avaliar uma resposta pela interface" time="1.308"></testcase>
+  <testcase classname="avaliacao_de_respostas_do_agente" name="Cada resposta do agente oferece 👍/👎 e as mensagens da pessoa não" time="1.029"></testcase>
+  <testcase classname="avaliacao_de_respostas_do_agente" name="Trocar a avaliação pela interface substitui a anterior" time="1.206"></testcase>
+</testsuite>

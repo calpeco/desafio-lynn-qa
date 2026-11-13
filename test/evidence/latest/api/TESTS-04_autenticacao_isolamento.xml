@@ -1,0 +1,13 @@
+<testsuite name="Autenticação e isolamento entre pessoas usuárias" tests="11" failures="0" time="0.371">
+  <testcase classname="04_autenticacao_isolamento" name="Sem autenticação válida, &quot;criar&quot; é negado (sem cabeçalho) -- @1.1" time="0.033"></testcase>
+  <testcase classname="04_autenticacao_isolamento" name="Sem autenticação válida, &quot;encerrar&quot; é negado (sem cabeçalho) -- @1.2" time="0.044"></testcase>
+  <testcase classname="04_autenticacao_isolamento" name="Sem autenticação válida, &quot;consultar&quot; é negado (token inválido) -- @1.3" time="0.040"></testcase>
+  <testcase classname="04_autenticacao_isolamento" name="Sem autenticação válida, &quot;enviar&quot; é negado (esquema Basic) -- @1.4" time="0.038"></testcase>
+  <testcase classname="04_autenticacao_isolamento" name="Outra pessoa não lê conversa alheia" time="0.035"></testcase>
+  <testcase classname="04_autenticacao_isolamento" name="Outra pessoa não envia mensagem em conversa alheia" time="0.034"></testcase>
+  <testcase classname="04_autenticacao_isolamento" name="Outra pessoa não encerra conversa alheia" time="0.043"></testcase>
+  <testcase classname="04_autenticacao_isolamento" name="Conversa alheia e inexistente são indistinguíveis" time="0.036"></testcase>
+  <testcase classname="04_autenticacao_isolamento" name="Identificadores maliciosos não causam erro interno (path traversal) -- @1.1" time="0.022"></testcase>
+  <testcase classname="04_autenticacao_isolamento" name="Identificadores maliciosos não causam erro interno (SQL-like) -- @1.2" time="0.023"></testcase>
+  <testcase classname="04_autenticacao_isolamento" name="Identificadores maliciosos não causam erro interno (null byte) -- @1.3" time="0.024"></testcase>
+</testsuite>

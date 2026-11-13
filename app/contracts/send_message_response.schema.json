@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "send_message_response.schema.json",
+  "title": "SendMessageResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["user_message", "assistant_message"],
+  "properties": {
+    "user_message": {"allOf": [{"$ref": "message.schema.json"}, {"properties": {"role": {"const": "user"}}}]},
+    "assistant_message": {"allOf": [{"$ref": "message.schema.json"}, {"properties": {"role": {"const": "assistant"}}}]}
+  }
+}

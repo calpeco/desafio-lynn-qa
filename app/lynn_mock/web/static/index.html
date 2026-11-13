@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LYNN — Conversa com agente</title>
+  <link rel="stylesheet" href="/static/chat.css">
+  <script src="/config.js"></script>
+</head>
+<body>
+  <!-- Frontend mínimo, só para viabilizar testes E2E (topo da pirâmide). Seletores estáveis via data-testid. -->
+  <main class="app">
+    <section id="login" data-testid="login-panel" class="panel">
+      <h1>LYNN Studio</h1>
+      <label for="user-select">Entrar como</label>
+      <select id="user-select" data-testid="user-select">
+        <option value="token-alice">Alice</option>
+        <option value="token-bob">Bob</option>
+      </select>
+      <button data-testid="login-button" id="login-button">Entrar</button>
+    </section>
+
+    <section id="chat" data-testid="chat-panel" class="panel" hidden>
+      <header class="chat-header">
+        <span data-testid="current-user" id="current-user"></span>
+        <select id="agent-select" data-testid="agent-select">
+          <option value="agt_support">Agente de suporte</option>
+          <option value="agt_sales">Agente de vendas</option>
+        </select>
+        <button data-testid="new-conversation-button" id="new-conversation-button">Nova conversa</button>
+        <button data-testid="close-conversation-button" id="close-conversation-button" disabled>Encerrar</button>
+      </header>
+      <div data-testid="conversation-status" id="conversation-status" class="status"></div>
+      <ol data-testid="message-list" id="message-list" class="messages" aria-live="polite"></ol>
+      <div data-testid="typing-indicator" id="typing-indicator" class="typing" hidden>Agente digitando…</div>
+      <div data-testid="error-banner" id="error-banner" class="error" role="alert" hidden>
+        <span data-testid="error-text" id="error-text"></span>
+        <button data-testid="retry-button" id="retry-button" hidden>Tentar novamente</button>
+      </div>
+      <form id="composer" class="composer">
+        <textarea data-testid="message-input" id="message-input" maxlength="4000"
+                  placeholder="Digite sua mensagem" disabled></textarea>
+        <span data-testid="char-counter" id="char-counter" class="counter">0/4000</span>
+        <button data-testid="send-button" id="send-button" type="submit" disabled>Enviar</button>
+      </form>
+    </section>
+  </main>
+  <script src="/static/chat.js"></script>
+</body>
+</html>
